@@ -1,0 +1,435 @@
+openapi: 3.0.0
+info:
+  title: Delilah Resto
+  description: Especificaciones para usar Delilah Resto, una API para administrar el sistema de delivery del restaurante.
+  contact:
+    name: Julio Rolando
+  version: 1.0.0
+servers:
+- url: http://localhost:3000
+tags:
+  - name: Users
+  - name: Products
+  - name: Orders
+  - name: Paymethods
+
+paths:
+  /users/login:
+    post:
+      tags: 
+        - Users
+      summary: Users login - returns an ID number
+      parameters:
+        - name: email
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: You are now logged in as EMAIL and your ID is IDNUMBER.
+        '401':
+          description: Incorrect email or password. Try again.
+
+  /users/:
+    post:
+      tags:
+        - Users
+      summary: Creates a new user.
+      requestBody:
+        $ref: '#/components/requestBodies/newUser'
+      responses:
+        '200':
+          description: New user created.
+        '400':
+          description: Error. Please try again.
+    get:      
+      tags: 
+        - Users
+      summary: Gets a list of all users information. [ADMIN]
+      parameters:
+        - name: user_id
+          in: header
+          required: true
+          schema:
+            type: number
+            example: 0
+      responses:
+        '200':
+          description: Returns all registered users
+        '400':
+          description: You don't have access to  this resource.
+          
+  /products:
+    get:      
+      tags: 
+        - Products
+      summary: See all products availables.
+      parameters:
+        - name: user_id
+          in: header
+          required: true
+          schema:
+            type: number
+            example: 0
+      responses:
+        '200':
+          description: Returns all products.
+        '400':
+          description: You must log in before this action.
+    post:
+      tags: 
+      - Products
+      summary: Create a new product. [ADMIN]
+      parameters:
+        - name: user_id
+          in: header
+          required: true
+          schema:
+            type: number
+            example: 0
+      requestBody:
+        $ref: '#/components/requestBodies/createProduct'
+      responses:
+        200:
+          description: Product created and added to products list.
+        400:
+          description: You don't have access to this resource.
+
+  /products/{id}:  
+    put:
+      tags: 
+        - Products
+      summary: Edit name and price of a product. [ADMIN]
+      parameters:
+      - name: user_id
+        in: header
+        required: true
+        schema:
+          type: number
+          example: 4
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: number
+          example: 1
+      requestBody:
+        $ref: '#/components/requestBodies/editProduct'
+      responses:
+        200:
+          description: Product updated.
+        400:
+          description: You don't have access to this resource.
+          
+    delete:
+      tags: 
+        - Products
+      summary: Delete one product. [ADMIN]
+      parameters:
+      - name: user_id
+        in: header
+        required: true
+        schema:
+          type: number
+          example: 0
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: number
+          example: 1
+      responses:
+        200:
+          description: Product deleted.
+        400:
+          description: You don't have access to this resource.
+
+  
+  /orders:
+    get:      
+      tags: 
+        - Orders
+      summary: See all orders. [ADMIN]
+      parameters: 
+        - name: user_id
+          in: header
+          required: true
+          schema:
+            type: number
+            example: 0
+      responses:
+        200:
+          description: Returns all orders.
+        400:
+          description: You don't have access to this resource.
+
+    post:
+      tags: 
+      - Orders
+      summary: Create new order adding one product each POST.
+      parameters:
+        - name: user_id
+          in: header
+          required: true
+          schema:
+            type: number
+            example: 1
+        - name: productindex
+          in: header
+          required: true
+          schema:
+            type: number
+            example: 2
+      responses:
+        200:
+          description: You added one product to your order.
+        400:
+          description: You must log in before this action.
+
+  /orders/history:
+    get:      
+      tags: 
+        - Orders
+      summary: User can get his orders history.
+      parameters:
+      - name: user_id
+        in: header
+        required: true
+        schema:
+          type: number
+          example: 1 
+      responses:
+        200:
+          description: Returns array of created orders.
+        400:
+          description: You must log in before this action.
+
+  /orders/checkout:
+    get:
+      tags: 
+        - Orders
+      summary: User confirm order and his payment method.
+      parameters:
+        - name: user_id
+          in: header
+          required: true
+          schema:
+            type: number
+            example: 0
+        - name: payment_id
+          in: header
+          required: true
+          schema:
+            type: number
+            example:  2
+      responses:
+        200:
+          description: Order confirmed. You choose to pay with paymentmethod.
+        400:
+          description: Your order is empty.
+
+  /orders/editstatus/{id}:
+    put:
+      tags: 
+        - Orders
+      summary: Edit order status. [ADMIN]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+            example: "Order ID - Example: 1"
+        - name: user_id
+          in: header
+          required: true
+          schema:
+            type: string
+            example: 0
+        - name: new_status
+          in: header
+          required: true
+          schema:
+            type: string
+            example:  "Pending, Cancelled, Confirmed, In process, Delivered, Completed"
+      responses:
+        200:
+          description: Order status updated.
+        400:
+          description: You don't have access to this resource.
+
+  /paymethods:
+    post:
+      tags: 
+        - Paymethods
+      summary: Create a new payment method. [ADMIN]
+      parameters:
+        - name: user_id
+          in: header
+          required: true
+          schema:
+            type: number
+            example: 0
+        - name: paymentid
+          in: header
+          required: true
+          schema:
+            type: string
+            example: 22
+        - name: paymentmethod
+          in: header
+          required: true
+          schema:
+            type: string
+            example:  "new payment method"
+      responses:
+        201:
+          description: Payment method created and added to payments methods list.
+        400:
+          description: You don't have access to this resource.
+    delete:
+      tags: 
+        - Paymethods
+      summary: Delete a payment method. [ADMIN]
+      parameters:
+        - name: user_id
+          in: header
+          required: true
+          schema:
+            type: number
+            example: 0
+        - name: deleteid
+          in: header
+          required: true
+          schema:
+            type: number
+            example: 1
+      responses:
+        200:
+          description: Payment method deleted.
+        400:
+          description: You don't have access to this resource.
+    get:
+      tags: 
+        - Paymethods
+      summary: Returns all payments methods. [ADMIN]
+      parameters:
+        - name: user_id
+          in: header
+          required: true
+          schema:
+            type: number
+            example: 0
+      responses:
+        200:
+          description: Array of payments methods.
+        400:
+          description: You don't have access to this resource.
+    put:
+      tags: 
+        - Paymethods
+      summary: Edit one payment method [ADMIN]
+      parameters:
+        - name: user_id
+          in: header
+          required: true
+          schema:
+            type: number
+            example: 0
+        - name: editpaymentid
+          in: header
+          required: true
+          schema:
+            type: number
+            example: 2
+        - name: paymentmethod
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "update payment method with: Bitcoin"
+      responses:
+        200:
+          description: Payment method updated.
+        400:
+          description: You don't have access to this resource.
+
+
+components:
+  requestBodies:
+              
+    createProduct:
+      description: Product Information
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - name
+              - price
+            properties:
+              name:
+                type: string
+                example: "Milanesa"
+              price:
+                type: number
+                example: 250
+
+    editProduct:
+      description: Product Information
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - name
+              - price
+            properties:
+              name:
+                type: string
+                example: "Milanesa"
+              price:
+                type: number
+                example: 250
+
+    newUser:
+      description: Create user
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: 
+              - username
+              - name_lastname
+              - email
+              - phone
+              - address
+              - password
+            properties:
+              username:
+                type: string
+                example: "jrarg10"
+              name_lastname:
+                type: string
+                example: "Julio Rolando"
+              email:
+                type: string
+                example: "julio@rolando.com"
+              phone:
+                type: string
+                example: "+542902901"
+              address:
+                type: string
+                example: "Av. San Martin 600"
+              password:
+                type: string
+                example: "qwerty"
