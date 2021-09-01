@@ -25,9 +25,18 @@ Luego, puede iniciar el servidor y ejecutar la API con el comando:
 
 ### Funcionamiento de la API 
 
-Puede probar el funcionamiento de la API cargando el archivo `api.yaml` en el sitio https://swagger.io/. 
+Puede probar el funcionamiento de la API de las siguientes formas:
 
-(Debe registrar un usuario gratuito para utilizar Swagger.)
+Cargando el archivo `api.yaml` en el sitio https://swagger.io/.
+
+Utilizando la aplicación `postman` puede cargar la api desde el siguiente link: 
+
+https://www.getpostman.com/collections/e2cba999c1e8049d2efc
+
+También puede hacerlo clickeando directamente en el siguiente botón:
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://god.gw.postman.com/run-collection/16890929-58acba51-1287-4aa8-ac80-71a453740541?action=collection%2Ffork&collection-url=entityId%3D16890929-58acba51-1287-4aa8-ac80-71a453740541%26entityType%3Dcollection%26workspaceId%3D9534a80e-3aba-4054-8ae2-42f84502f086)
+
 
 ##### Importante:
 La API ya contiene un usuario previamente registrado con privilegios de administrador.
@@ -37,3 +46,4 @@ La API ya contiene un usuario previamente registrado con privilegios de administ
     - **Nombre de usuario:**  admindelilah
     - **Email:** admin@delilahresto.com
     - **Contraseña:** qwerty
+
